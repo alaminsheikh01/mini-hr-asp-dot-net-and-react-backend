@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 public class Employee
@@ -9,6 +10,8 @@ public class Employee
     public string PhoneNumber { get; set; }
     public string Address { get; set; }
     public string City { get; set; }
+    public decimal GrossSalary { get; set; }
+    public DateTime DateOfJoining { get; set; }
 
     [ForeignKey("Designation")]
     public int DesignationId { get; set; }

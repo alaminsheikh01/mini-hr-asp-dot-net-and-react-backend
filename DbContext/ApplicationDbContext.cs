@@ -8,4 +8,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<Employee> Employee { get; set; }
     public DbSet<Designation> Designation { get; set; }
     public DbSet<Department> Department { get; set; }
+    public DbSet<EmployeeSalary> EmployeeSalary { get; set; }
 }
