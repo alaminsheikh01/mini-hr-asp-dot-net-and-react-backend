@@ -1,3 +1,5 @@
+using System;
+
 public class EmployeePayload
 {
     public string FirstName { get; set; }
@@ -7,5 +9,7 @@ public class EmployeePayload
     public string Address { get; set; }
     public string City { get; set; }
     public int DesignationId { get; set; }
-    public int DepartmentId { get; set; }    
+    public int DepartmentId { get; set; }   
+    public DateTime DateOfJoining { get; set; }
+    public decimal GrossSalary { get; set; }
 }

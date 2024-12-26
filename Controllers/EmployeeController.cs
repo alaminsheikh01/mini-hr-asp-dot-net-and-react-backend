@@ -21,9 +21,10 @@ public class EmployeeController : ControllerBase
         var employees = await (from e in _context.Employee
                                join des in _context.Designation on e.DesignationId equals des.Id
                                join dp in _context.Department on e.DepartmentId equals dp.Id
-                               where (EmployeeId == 0 || e.Id == EmployeeId) || e.FirstName.Contains(searchText)
+                               where EmployeeId == 0 || e.Id == EmployeeId || e.FirstName.Contains(searchText)
                                select new EmployeeDTO
                                {
+                                   EmployeeId = e.Id,
                                    FirstName = e.FirstName,
                                    LastName = e.LastName,
                                    Email = e.Email,
@@ -33,7 +34,9 @@ public class EmployeeController : ControllerBase
                                    DesignationId = e.DesignationId,
                                    DesignationName = des.Name,
                                    DepartmentId = e.DepartmentId,
-                                   DepartmentName = dp.Name
+                                   DepartmentName = dp.Name,
+                                   GrossSalary = e.GrossSalary,
+                                   DateOfJoining = e.DateOfJoining
                                }).ToListAsync();
         return Ok(employees);
     }
@@ -50,11 +53,62 @@ public class EmployeeController : ControllerBase
             Address = payload.Address,
             City = payload.City,
             DesignationId = payload.DesignationId,
-            DepartmentId = payload.DepartmentId
+            DepartmentId = payload.DepartmentId,
+            GrossSalary = payload.GrossSalary,
+            DateOfJoining = payload.DateOfJoining
         };
         await _context.Employee.AddAsync(employee);
         await _context.SaveChangesAsync();
         return Ok(employee);
+    }
+
+    [HttpPut("update/{id}")]
+    public async Task<ActionResult> UpdateEmployee([FromBody] EmployeePayload payload, int id)
+    {
+        var employee = await _context.Employee.FindAsync(id);
+
+        if (employee == null)
+        {
+            return NotFound();
+        }
+        employee.FirstName = payload.FirstName;
+        employee.LastName = payload.LastName;
+        employee.Email = payload.Email;
+        employee.PhoneNumber = payload.PhoneNumber;
+        employee.Address = payload.Address;
+        employee.City = payload.City;
+        employee.DesignationId = payload.DesignationId;
+        employee.DepartmentId = payload.DepartmentId;
+        employee.GrossSalary = payload.GrossSalary;
+        employee.DateOfJoining = payload.DateOfJoining;
+        try
+        {
+            await _context.SaveChangesAsync();
+            return Ok(employee);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost]
+    [Route("addEmployeeSalary")]
+    public async Task<ActionResult> AddEmployeeSalary([FromBody] EmployeeSalaryPayload payload)
+    {
+        var employeeSalary = new EmployeeSalary
+        {
+            EmployeeId = payload.EmployeeId,
+            GrossSalary = payload.GrossSalary,
+            Month = payload.SalaryMonth,
+            Year = payload.SalaryYear,
+            DepartmentId = payload.DepartmentId,
+            DesignationId = payload.DesignationId
+
+        };
+        await _context.EmployeeSalary.AddAsync(employeeSalary);
+        await _context.SaveChangesAsync();
+        return Ok(employeeSalary);
     }
 
     [HttpPost]
@@ -117,43 +171,25 @@ public class EmployeeController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult> GetEmployeeById(int id)
     {
-        var employee = await _context.Employee.FindAsync(id);
-
-        if (employee == null)
-        {
-            return NotFound();
-        }
-        return Ok(employee);
+        var employeeById = await (from e in _context.Employee
+                                  join des in _context.Designation on e.DesignationId equals des.Id
+                                  join dp in _context.Department on e.DepartmentId equals dp.Id
+                                  where e.Id == id
+                                  select new EmployeeDTO
+                                  {
+                                      FirstName = e.FirstName,
+                                      LastName = e.LastName,
+                                      Email = e.Email,
+                                      PhoneNumber = e.PhoneNumber,
+                                      Address = e.Address,
+                                      City = e.City,
+                                      DesignationId = e.DesignationId,
+                                      DesignationName = des.Name,
+                                      DepartmentId = e.DepartmentId,
+                                      DepartmentName = dp.Name,
+                                      GrossSalary = e.GrossSalary,
+                                      DateOfJoining = e.DateOfJoining
+                                  }).FirstOrDefaultAsync();
+        return Ok(employeeById);
     }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateEmployee(int id, EmployeePayload payload)
-    {
-        var employee = await _context.Employee.FindAsync(id);
-        //     var employee = await _context.Employee
-        //   .SingleAsync(e => e.Id == id);
-
-        if (employee == null)
-        {
-            return NotFound();
-        }
-
-        employee.FirstName = payload.FirstName;
-        employee.LastName = payload.LastName;
-        employee.Email = payload.Email;
-        employee.PhoneNumber = payload.PhoneNumber;
-        employee.Address = payload.Address;
-        employee.City = payload.City;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-            return Ok(employee);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return NotFound();
-        }
-    }
-
 }

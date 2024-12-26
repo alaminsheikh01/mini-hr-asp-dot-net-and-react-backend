@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Asp Dot Net\\FirstOne\\FirstOne.csproj": {}
+    "d:\\Asp Dot Net\\FirstOne\\FirstOne.csproj": {}
   },
   "projects": {
-    "D:\\Asp Dot Net\\FirstOne\\FirstOne.csproj": {
+    "d:\\Asp Dot Net\\FirstOne\\FirstOne.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Asp Dot Net\\FirstOne\\FirstOne.csproj",
+        "projectUniqueName": "d:\\Asp Dot Net\\FirstOne\\FirstOne.csproj",
         "projectName": "FirstOne",
-        "projectPath": "D:\\Asp Dot Net\\FirstOne\\FirstOne.csproj",
+        "projectPath": "d:\\Asp Dot Net\\FirstOne\\FirstOne.csproj",
         "packagesPath": "C:\\Users\\Windows\\.nuget\\packages\\",
-        "outputPath": "D:\\Asp Dot Net\\FirstOne\\obj\\",
+        "outputPath": "d:\\Asp Dot Net\\FirstOne\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Windows\\AppData\\Roaming\\NuGet\\NuGet.Config"
