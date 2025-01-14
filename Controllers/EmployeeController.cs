@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -42,24 +43,36 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddEmployee([FromBody] EmployeePayload payload)
+    public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
     {
-        var employee = new Employee
+
+        if(payload == null || payload.Count == 0)
         {
-            FirstName = payload.FirstName,
-            LastName = payload.LastName,
-            Email = payload.Email,
-            PhoneNumber = payload.PhoneNumber,
-            Address = payload.Address,
-            City = payload.City,
-            DesignationId = payload.DesignationId,
-            DepartmentId = payload.DepartmentId,
-            GrossSalary = payload.GrossSalary,
-            DateOfJoining = payload.DateOfJoining
-        };
-        await _context.Employee.AddAsync(employee);
+            return BadRequest("No data found to save");
+        }
+
+        var employees = payload.Select(data => new Employee
+        {
+            FirstName = data.FirstName,
+            LastName = data.LastName,
+            Email = data.Email,
+            PhoneNumber = data.PhoneNumber,
+            Address = data.Address,
+            City = data.City,
+            DesignationId = data.DesignationId,
+            DepartmentId = data.DepartmentId,
+            GrossSalary = data.GrossSalary,
+            DateOfJoining = data.DateOfJoining
+        }).ToList();
+
+        await _context.Employee.AddRangeAsync(employees);
         await _context.SaveChangesAsync();
-        return Ok(employee);
+
+        return Ok (new{
+            message = "Employee added successfully",
+            data = employees
+        });
+       
     }
 
     [HttpPut("update/{id}")]
