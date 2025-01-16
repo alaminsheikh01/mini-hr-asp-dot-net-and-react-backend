@@ -43,15 +43,17 @@ public class EmployeeController : ControllerBase
 
     [HttpGet]
     [Route("employeeAssign")]
-    public async Task<ActionResult> GetEmployeeAssign (int EmployeeId)
+    public async Task<ActionResult> GetEmployeeAssign(int? EmployeeId)
     {
         var employeeAssign = await (from e in _context.Employee
                                     join des in _context.Designation on e.DesignationId equals des.Id
                                     join dp in _context.Department on e.DepartmentId equals dp.Id
-                                    join es in _context.EmployeeSalary on e.Id equals es.EmployeeId
-                                    where EmployeeId == 0 || e.Id == EmployeeId
+                                    join sa in _context.SalaryAssign on e.Id equals sa.EmployeeId into saGroup
+                                    from sa in saGroup.DefaultIfEmpty()
+                                    where EmployeeId == null || EmployeeId == 0 || e.Id == EmployeeId
                                     select new EmployeeDTO
                                     {
+                                        SalaryAssignId = sa.Id,
                                         EmployeeId = e.Id,
                                         FirstName = e.FirstName,
                                         LastName = e.LastName,
@@ -59,18 +61,70 @@ public class EmployeeController : ControllerBase
                                         DesignationName = des.Name,
                                         DepartmentId = e.DepartmentId ?? 0,
                                         DepartmentName = dp.Name,
-                                        GrossSalary = es.GrossSalary,
-                                        BasicSalary = 1000,
-                                        Status = false
+                                        BasicSalary = sa.BasicSalary,
+                                        GrossSalary = sa.GrossSalary,
+                                        Status = sa.Status || false
                                     }).ToListAsync();
         return Ok(employeeAssign);
     }
 
     [HttpPost]
+    [Route("assignSalary")]
+    public async Task<ActionResult> AssignSalary([FromBody] SalaryAssign payload)
+    {
+        if (payload == null)
+        {
+            return BadRequest("No data found to save");
+        }
+
+        if (payload.Id > 0)
+        {
+            var salaryAssign = await _context.SalaryAssign.FindAsync(payload.Id);
+            if (salaryAssign == null)
+            {
+                return NotFound("Record not found to update");
+            }
+            salaryAssign.EmployeeId = payload.EmployeeId;
+            salaryAssign.BasicSalary = payload.BasicSalary;
+            salaryAssign.GrossSalary = payload.GrossSalary;
+            salaryAssign.HouseRent = payload.HouseRent;
+            salaryAssign.MedicalAllowance = payload.MedicalAllowance;
+            salaryAssign.Conveyance = payload.Conveyance;
+            salaryAssign.Status = payload.Status;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(salaryAssign);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+            }
+        }
+        else
+        {
+            var salaryAssign = new SalaryAssign
+            {
+                EmployeeId = payload.EmployeeId,
+                BasicSalary = payload.BasicSalary,
+                GrossSalary = payload.GrossSalary,
+                HouseRent = payload.HouseRent,
+                MedicalAllowance = payload.MedicalAllowance,
+                Conveyance = payload.Conveyance,
+                Status = payload.Status
+            };
+            await _context.SalaryAssign.AddAsync(salaryAssign);
+            await _context.SaveChangesAsync();
+            return Ok(salaryAssign);
+        }
+    }
+
+
+    [HttpPost]
     public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
     {
 
-        if(payload == null || payload.Count == 0)
+        if (payload == null || payload.Count == 0)
         {
             return BadRequest("No data found to save");
         }
@@ -91,11 +145,12 @@ public class EmployeeController : ControllerBase
         await _context.Employee.AddRangeAsync(employees);
         await _context.SaveChangesAsync();
 
-        return Ok (new{
+        return Ok(new
+        {
             message = "Employee added successfully",
             data = employees
         });
-       
+
     }
 
     [HttpPut("update/{id}")]
