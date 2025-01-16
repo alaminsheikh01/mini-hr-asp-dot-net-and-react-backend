@@ -15,7 +15,9 @@ public class EmployeeDTO
     public string? DesignationName { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }  
-    public decimal? GrossSalary { get; set; }
     public DateTime? DateOfJoining { get; set; }
+    public bool? Status { get; set; }
+    public decimal? GrossSalary { get; set; }
+    public decimal? BasicSalary { get; set; }
 
 }

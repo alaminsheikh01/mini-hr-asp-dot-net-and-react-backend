@@ -41,6 +41,31 @@ public class EmployeeController : ControllerBase
         return Ok(employees);
     }
 
+    [HttpGet]
+    [Route("employeeAssign")]
+    public async Task<ActionResult> GetEmployeeAssign (int EmployeeId)
+    {
+        var employeeAssign = await (from e in _context.Employee
+                                    join des in _context.Designation on e.DesignationId equals des.Id
+                                    join dp in _context.Department on e.DepartmentId equals dp.Id
+                                    join es in _context.EmployeeSalary on e.Id equals es.EmployeeId
+                                    where EmployeeId == 0 || e.Id == EmployeeId
+                                    select new EmployeeDTO
+                                    {
+                                        EmployeeId = e.Id,
+                                        FirstName = e.FirstName,
+                                        LastName = e.LastName,
+                                        DesignationId = e.DesignationId ?? 0,
+                                        DesignationName = des.Name,
+                                        DepartmentId = e.DepartmentId ?? 0,
+                                        DepartmentName = dp.Name,
+                                        GrossSalary = es.GrossSalary,
+                                        BasicSalary = 1000,
+                                        Status = false
+                                    }).ToListAsync();
+        return Ok(employeeAssign);
+    }
+
     [HttpPost]
     public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
     {
