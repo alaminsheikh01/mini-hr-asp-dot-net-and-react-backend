@@ -32,12 +32,11 @@ public class EmployeeController : ControllerBase
                                    PhoneNumber = e.PhoneNumber,
                                    Address = e.Address,
                                    City = e.City,
-                                   DesignationId = e.DesignationId,
+                                   DesignationId = e.DesignationId ?? 0,
                                    DesignationName = des.Name,
-                                   DepartmentId = e.DepartmentId,
+                                   DepartmentId = e.DepartmentId ?? 0,
                                    DepartmentName = dp.Name,
-                                   GrossSalary = e.GrossSalary,
-                                   DateOfJoining = e.DateOfJoining
+                                   DateOfJoining = e.DateOfJoining ?? System.DateTime.Now
                                }).ToListAsync();
         return Ok(employees);
     }
@@ -59,10 +58,9 @@ public class EmployeeController : ControllerBase
             PhoneNumber = data.PhoneNumber,
             Address = data.Address,
             City = data.City,
-            DesignationId = data.DesignationId,
-            DepartmentId = data.DepartmentId,
-            GrossSalary = data.GrossSalary,
-            DateOfJoining = data.DateOfJoining
+            DesignationId = data.DesignationId ?? 0,
+            DepartmentId = data.DepartmentId ?? 0,
+            DateOfJoining = data.DateOfJoining ?? System.DateTime.Now
         }).ToList();
 
         await _context.Employee.AddRangeAsync(employees);
@@ -90,10 +88,9 @@ public class EmployeeController : ControllerBase
         employee.PhoneNumber = payload.PhoneNumber;
         employee.Address = payload.Address;
         employee.City = payload.City;
-        employee.DesignationId = payload.DesignationId;
-        employee.DepartmentId = payload.DepartmentId;
-        employee.GrossSalary = payload.GrossSalary;
-        employee.DateOfJoining = payload.DateOfJoining;
+        employee.DesignationId = payload.DesignationId ?? 0;
+        employee.DepartmentId = payload.DepartmentId ?? 0;
+        employee.DateOfJoining = payload.DateOfJoining ?? System.DateTime.Now;
         try
         {
             await _context.SaveChangesAsync();
@@ -196,12 +193,11 @@ public class EmployeeController : ControllerBase
                                       PhoneNumber = e.PhoneNumber,
                                       Address = e.Address,
                                       City = e.City,
-                                      DesignationId = e.DesignationId,
+                                      DesignationId = e.DesignationId ?? 0,
                                       DesignationName = des.Name,
-                                      DepartmentId = e.DepartmentId,
+                                      DepartmentId = e.DepartmentId ?? 0,
                                       DepartmentName = dp.Name,
-                                      GrossSalary = e.GrossSalary,
-                                      DateOfJoining = e.DateOfJoining
+                                      DateOfJoining = e.DateOfJoining ?? System.DateTime.Now
                                   }).FirstOrDefaultAsync();
         return Ok(employeeById);
     }
