@@ -186,20 +186,43 @@ public class EmployeeController : ControllerBase
     [Route("addEmployeeSalary")]
     public async Task<ActionResult> AddEmployeeSalary([FromBody] EmployeeSalaryPayload payload)
     {
+        if (payload == null)
+        {
+            return BadRequest("Invalid payload");
+        }
+
+        var salaryAssign = await _context.SalaryAssign
+            .FirstOrDefaultAsync(sa => sa.EmployeeId == payload.EmployeeId);
+
+        if (salaryAssign == null)
+        {
+            return NotFound($"No salary assignment found for EmployeeId {payload.EmployeeId}");
+        }
+
         var employeeSalary = new EmployeeSalary
         {
             EmployeeId = payload.EmployeeId,
-            GrossSalary = payload.GrossSalary,
+            GrossSalary = salaryAssign.GrossSalary,
+            BasicSalary = salaryAssign.BasicSalary,
+            HouseRent = salaryAssign.HouseRent,
+            MedicalAllowance = salaryAssign.MedicalAllowance,
+            Conveyance = salaryAssign.Conveyance,
             Month = payload.SalaryMonth,
             Year = payload.SalaryYear,
             DepartmentId = payload.DepartmentId,
             DesignationId = payload.DesignationId
-
         };
+
         await _context.EmployeeSalary.AddAsync(employeeSalary);
         await _context.SaveChangesAsync();
-        return Ok(employeeSalary);
+
+        return Ok(new
+        {
+            message = "Employee salary added successfully",
+            data = employeeSalary
+        });
     }
+
 
     [HttpPost]
     [Route("department")]
