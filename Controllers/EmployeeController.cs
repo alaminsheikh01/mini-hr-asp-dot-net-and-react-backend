@@ -41,6 +41,31 @@ public class EmployeeController : ControllerBase
         return Ok(employees);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult> GetEmployeeById(int id)
+    {
+        var employeeById = await (from e in _context.Employee
+                                  join des in _context.Designation on e.DesignationId equals des.Id
+                                  join dp in _context.Department on e.DepartmentId equals dp.Id
+                                  where e.Id == id
+                                  select new EmployeeDTO
+                                  {
+                                      FirstName = e.FirstName,
+                                      LastName = e.LastName,
+                                      Email = e.Email,
+                                      PhoneNumber = e.PhoneNumber,
+                                      Address = e.Address,
+                                      City = e.City,
+                                      DesignationId = e.DesignationId ?? 0,
+                                      DesignationName = des.Name,
+                                      DepartmentId = e.DepartmentId ?? 0,
+                                      DepartmentName = dp.Name,
+                                      DateOfJoining = e.DateOfJoining ?? System.DateTime.Now
+                                  }).FirstOrDefaultAsync();
+        return Ok(employeeById);
+    }
+
+
     [HttpGet]
     [Route("employeeAssign")]
     public async Task<ActionResult> GetEmployeeAssign(int? EmployeeId)
@@ -196,7 +221,10 @@ public class EmployeeController : ControllerBase
 
         if (salaryAssign == null)
         {
-            return NotFound($"No salary assignment found for EmployeeId {payload.EmployeeId}");
+            return NotFound(new
+            {
+                message = $"No salary assignment found for this Employee",
+            });
         }
 
         var employeeSalary = new EmployeeSalary
@@ -223,6 +251,54 @@ public class EmployeeController : ControllerBase
         });
     }
 
+    [HttpGet]
+    [Route("employeeSalaryLanding")]
+    public async Task<ActionResult> GetEmployeeSalaryLanding(int? EmployeeId)
+    {
+        var employeeSalary = await (from es in _context.EmployeeSalary
+                                    join dp in _context.Department on es.DepartmentId equals dp.Id
+                                    join des in _context.Designation on es.DesignationId equals des.Id
+                                    join e in _context.Employee on es.EmployeeId equals e.Id
+                                    where EmployeeId == null || EmployeeId == 0 || es.EmployeeId == EmployeeId
+                                    select new EmployeeSalaryDTO
+                                    {
+                                        EmployeeSalaryId = es.Id,
+                                        EmployeeId = es.EmployeeId,
+                                        EmployeeName = e.FirstName + " " + e.LastName,
+                                        DepartmentName = dp.Name,
+                                        DesignationName = des.Name,
+                                        SalaryMonth = es.Month,
+                                        SalaryYear = es.Year
+                                    }).ToListAsync();
+        return Ok(employeeSalary);
+    }
+
+    [HttpGet]
+    [Route("employeeSalaryDetails")]
+    public async Task<ActionResult> GetEmployeeSalaryDetails(int EmployeeSalaryId)
+    {
+        var employeeSalaryDetails = await (from es in _context.EmployeeSalary
+                                           join dp in _context.Department on es.DepartmentId equals dp.Id
+                                           join des in _context.Designation on es.DesignationId equals des.Id
+                                           join e in _context.Employee on es.EmployeeId equals e.Id
+                                           where es.Id == EmployeeSalaryId
+                                           select new EmployeeSalaryDTO
+                                           {
+                                               EmployeeSalaryId = es.Id,
+                                               EmployeeId = es.EmployeeId,
+                                               EmployeeName = e.FirstName + " " + e.LastName,
+                                               DepartmentName = dp.Name,
+                                               DesignationName = des.Name,
+                                               SalaryMonth = es.Month,
+                                               SalaryYear = es.Year,
+                                               BasicSalary = es.BasicSalary,
+                                               GrossSalary = es.GrossSalary,
+                                               HouseRent = es.HouseRent,
+                                               MedicalAllowance = es.MedicalAllowance,
+                                               Conveyance = es.Conveyance
+                                           }).FirstOrDefaultAsync();
+        return Ok(employeeSalaryDetails);
+    }
 
     [HttpPost]
     [Route("department")]
@@ -281,27 +357,5 @@ public class EmployeeController : ControllerBase
         return Ok(designations);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult> GetEmployeeById(int id)
-    {
-        var employeeById = await (from e in _context.Employee
-                                  join des in _context.Designation on e.DesignationId equals des.Id
-                                  join dp in _context.Department on e.DepartmentId equals dp.Id
-                                  where e.Id == id
-                                  select new EmployeeDTO
-                                  {
-                                      FirstName = e.FirstName,
-                                      LastName = e.LastName,
-                                      Email = e.Email,
-                                      PhoneNumber = e.PhoneNumber,
-                                      Address = e.Address,
-                                      City = e.City,
-                                      DesignationId = e.DesignationId ?? 0,
-                                      DesignationName = des.Name,
-                                      DepartmentId = e.DepartmentId ?? 0,
-                                      DepartmentName = dp.Name,
-                                      DateOfJoining = e.DateOfJoining ?? System.DateTime.Now
-                                  }).FirstOrDefaultAsync();
-        return Ok(employeeById);
-    }
+
 }
