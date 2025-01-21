@@ -1,20 +1,105 @@
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 [Route("api/[controller]")]
 public class EmployeeController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly PasswordHasher _passwordHasher;
 
     public EmployeeController(ApplicationDbContext context)
     {
         _context = context;
+        _passwordHasher = new PasswordHasher();
     }
 
+    [HttpPost]
+    [Route("signup")]
+    public async Task<IActionResult> Signup([FromBody] SignupDto payload)
+    {
+        if (await _context.SignUp.AnyAsync(u => u.Email == payload.Email))
+        {
+            return BadRequest("Email already exists.");
+        }
+
+        var user = new SignUp
+        {
+            Email = payload.Email,
+            // Password = _passwordHasher.HashPassword(payload.Password),
+            Password = payload.Password,
+            UserName = payload.UserName,
+            Role = "User",
+        };
+
+        await _context.SignUp.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Message = "Signup successful.",
+        });
+    }
+
+    [HttpPost("signin")]
+    public async Task<IActionResult> Signin(SigninDto model)
+    {
+        var user = await _context.SignUp.FirstOrDefaultAsync(u => u.Email == model.Email);
+
+        if (user == null)
+        {
+            return Unauthorized("Invalid email or password.");
+        }
+
+        if (user.Password != model.Password)
+        {
+            return Unauthorized("Invalid email or password.");
+        }
+
+        var token = GenerateJwtToken(user);
+
+        return Ok(new
+        {
+            Message = "Signin successful.",
+            Token = token,
+            User = new
+            {
+                user.Id,
+                user.Email,
+                user.Role,
+            }
+        });
+    }
+
+    private string GenerateJwtToken(SignUp user)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey"));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        new Claim("role", user.Role),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+        var token = new JwtSecurityToken(
+            issuer: "YourIssuer",
+            audience: "YourAudience",
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(7),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 
     [HttpGet]
     public async Task<ActionResult> GetEmployees(int EmployeeId, string searchText)
@@ -356,6 +441,5 @@ public class EmployeeController : ControllerBase
         }).ToListAsync();
         return Ok(designations);
     }
-
 
 }
