@@ -50,7 +50,7 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPost("signin")]
-    public async Task<IActionResult> Signin(SigninDto model)
+    public async Task<IActionResult> Signin([FromBody] SigninDto model)
     {
         var user = await _context.SignUp.FirstOrDefaultAsync(u => u.Email == model.Email);
 
