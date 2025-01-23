@@ -30,14 +30,14 @@ public class EmployeeController : ControllerBase
         {
             return BadRequest("Email already exists.");
         }
-
         var user = new SignUp
         {
             Email = payload.Email,
             // Password = _passwordHasher.HashPassword(payload.Password),
             Password = payload.Password,
             UserName = payload.UserName,
-            Role = "User",
+            Role = payload.Role,
+            IsMasterUser = payload.IsMasterUser || false
         };
 
         await _context.SignUp.AddAsync(user);
@@ -75,6 +75,8 @@ public class EmployeeController : ControllerBase
                 user.Id,
                 user.Email,
                 user.Role,
+                user.UserName,
+                user.IsMasterUser
             }
         });
     }
@@ -239,6 +241,21 @@ public class EmployeeController : ControllerBase
             return BadRequest("No data found to save");
         }
 
+        var payloadEmails = payload.Select(p => p.Email).ToList();
+
+        var existingEmails = await _context.Employee
+            .Where(e => payloadEmails.Contains(e.Email))
+            .Select(e => e.Email)
+            .ToListAsync();
+
+        if (existingEmails.Any())
+        {
+            return BadRequest(new
+            {
+                message = $"Emails already exist",
+            });
+        }
+
         var employees = payload.Select(data => new Employee
         {
             FirstName = data.FirstName,
@@ -252,13 +269,24 @@ public class EmployeeController : ControllerBase
             DateOfJoining = data.DateOfJoining ?? System.DateTime.Now
         }).ToList();
 
+        var signUp = payload.Select(data => new SignUp
+        {
+            Email = data.Email,
+            Password = "123456",
+            UserName = data.FirstName + " " + data.LastName,
+            Role = "User",
+            IsMasterUser = false
+        }).ToList();
+
         await _context.Employee.AddRangeAsync(employees);
+        await _context.SignUp.AddRangeAsync(signUp);
         await _context.SaveChangesAsync();
 
         return Ok(new
         {
             message = "Employee added successfully",
-            data = employees
+            data = employees,
+            user = signUp
         });
 
     }

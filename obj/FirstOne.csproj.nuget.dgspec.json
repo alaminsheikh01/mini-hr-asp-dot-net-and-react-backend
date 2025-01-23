@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj": {}
+    "D:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj": {}
   },
   "projects": {
-    "d:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj": {
+    "D:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj",
+        "projectUniqueName": "D:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj",
         "projectName": "FirstOne",
-        "projectPath": "d:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj",
+        "projectPath": "D:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj",
         "packagesPath": "C:\\Users\\Windows\\.nuget\\packages\\",
-        "outputPath": "d:\\Mini-Payroll\\mini-payroll-back\\obj\\",
+        "outputPath": "D:\\Mini-Payroll\\mini-payroll-back\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Windows\\AppData\\Roaming\\NuGet\\NuGet.Config"
