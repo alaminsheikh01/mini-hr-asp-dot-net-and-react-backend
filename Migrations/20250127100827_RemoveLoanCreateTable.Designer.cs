@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250127100827_RemoveLoanCreateTable")]
+    partial class RemoveLoanCreateTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,43 +152,6 @@ namespace FirstOne.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmployeeSalary");
-                });
-
-            modelBuilder.Entity("Loan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Installment")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("InstallmentAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("LoanAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("LoanDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LoanType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Loan");
                 });
 
             modelBuilder.Entity("SalaryAssign", b =>

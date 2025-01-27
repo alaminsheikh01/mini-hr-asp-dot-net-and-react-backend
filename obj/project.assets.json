@@ -2685,19 +2685,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Windows\\.nuget\\packages\\": {}
+    "C:\\Users\\hp\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj",
-      "projectName": "FirstOne",
-      "projectPath": "D:\\Mini-Payroll\\mini-payroll-back\\FirstOne.csproj",
-      "packagesPath": "C:\\Users\\Windows\\.nuget\\packages\\",
-      "outputPath": "D:\\Mini-Payroll\\mini-payroll-back\\obj\\",
+      "projectUniqueName": "D:\\Personal Project\\mini-payroll\\Back-end\\PayrollSystem.csproj",
+      "projectName": "PayrollSystem",
+      "projectPath": "D:\\Personal Project\\mini-payroll\\Back-end\\PayrollSystem.csproj",
+      "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
+      "outputPath": "D:\\Personal Project\\mini-payroll\\Back-end\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Windows\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\hp\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"

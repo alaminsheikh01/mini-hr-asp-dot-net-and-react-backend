@@ -470,4 +470,60 @@ public class EmployeeController : ControllerBase
         return Ok(designations);
     }
 
+    [HttpPost]
+    [Route("loanCreate")]
+    public async Task<ActionResult> CreateLoan([FromBody] LoanPayload payload)
+    {
+        var loan = new Loan
+        {
+            EmployeeId = payload.EmployeeId,
+            LoanAmount = payload.LoanAmount,
+            LoanDate = payload.LoanDate,
+            LoanType = payload.LoanType,
+            Installment = payload.Installment,
+            InstallmentAmount = payload.InstallmentAmount,
+            Description = payload.Description,
+            Status = "Active"
+        };
+        await _context.Loan.AddAsync(loan);
+        await _context.SaveChangesAsync();
+        return Ok(loan);
+    }
+
+    [HttpGet]
+    [Route("loanLanding")]
+    public async Task<ActionResult> GetLoanList(int? EmployeeId)
+    {
+        var loanList = await (from l in _context.Loan
+                              join e in _context.Employee on l.EmployeeId equals e.Id
+                              where EmployeeId == null || EmployeeId == 0 || l.EmployeeId == EmployeeId
+                              select new LoanDTO
+                              {
+                                  LoanId = l.Id,
+                                  EmployeeId = l.EmployeeId,
+                                  EmployeeName = e.FirstName + " " + e.LastName,
+                                  LoanAmount = l.LoanAmount,
+                                  LoanDate = l.LoanDate,
+                                  LoanType = l.LoanType,
+                                  Installment = l.Installment,
+                                  InstallmentAmount = l.InstallmentAmount,
+                                  Description = l.Description,
+
+                              }).ToListAsync();
+        return Ok(loanList);
+    }
+    [HttpPut]
+    [Route("loanDelete")]
+    public async Task<ActionResult> DeleteLoan(int LoanId)
+    {
+        var loan = await _context.Loan.FindAsync(LoanId);
+        if (loan == null)
+        {
+            return NotFound();
+        }
+        _context.Loan.Remove(loan);
+        await _context.SaveChangesAsync();
+        return Ok(loan);
+    }
+
 }
