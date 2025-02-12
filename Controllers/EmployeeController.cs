@@ -143,6 +143,11 @@ public class EmployeeController : ControllerBase
                                       PhoneNumber = e.PhoneNumber,
                                       Address = e.Address,
                                       City = e.City,
+                                      Gender = e.Gender,
+                                      Grade = e.Grade ?? 0,
+                                      InsuranceNumber = e.InsuranceNumber,
+                                      TINNumber = e.TINNumber ?? 0,
+                                      EmployeeStatus = e.employeeStatus,
                                       DesignationId = e.DesignationId ?? 0,
                                       DesignationName = des.Name,
                                       DepartmentId = e.DepartmentId ?? 0,
@@ -311,6 +316,11 @@ public class EmployeeController : ControllerBase
         employee.PhoneNumber = payload.PhoneNumber;
         employee.Address = payload.Address;
         employee.City = payload.City;
+        employee.Gender = payload.Gender ?? "";
+        employee.Grade = payload.Grade ?? 0;
+        employee.InsuranceNumber = payload.InsuranceNumber ?? "";
+        employee.TINNumber = payload.TINNumber ?? 0;
+        employee.employeeStatus = payload.EmployeeStatus ?? "";
         employee.DesignationId = payload.DesignationId ?? 0;
         employee.DepartmentId = payload.DepartmentId ?? 0;
         employee.DateOfJoining = payload.DateOfJoining ?? System.DateTime.Now;
