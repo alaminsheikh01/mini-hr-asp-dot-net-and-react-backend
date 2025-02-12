@@ -10,6 +10,11 @@ public class Employee
     public string? PhoneNumber { get; set; }
     public string? Address { get; set; }
     public string? City { get; set; }
+    public string? Gender { get; set; }
+    public int? Grade { get; set; }
+    public string? InsuranceNumber { get; set; }
+    public int? TINNumber { get; set; }
+    public string? employeeStatus { get; set; }
     public DateTime? DateOfJoining { get; set; }
 
     [ForeignKey("Designation")]
