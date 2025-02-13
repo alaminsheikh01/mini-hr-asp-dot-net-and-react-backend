@@ -204,10 +204,19 @@ public class EmployeeController : ControllerBase
             salaryAssign.EmployeeId = payload.EmployeeId;
             salaryAssign.BasicSalary = payload.BasicSalary;
             salaryAssign.GrossSalary = payload.GrossSalary;
-            salaryAssign.HouseRent = payload.HouseRent;
             salaryAssign.MedicalAllowance = payload.MedicalAllowance;
             salaryAssign.Conveyance = payload.Conveyance;
             salaryAssign.Status = payload.Status;
+            salaryAssign.AdvanceSalary = payload.AdvanceSalary;
+            salaryAssign.CarAllowance = payload.CarAllowance;
+            salaryAssign.CcCharge = payload.CcCharge;
+            salaryAssign.LunchDeduction = payload.LunchDeduction;
+            salaryAssign.LoanRepayment = payload.LoanRepayment;
+            salaryAssign.LastMonthLoanPayment = payload.LastMonthLoanPayment;
+            salaryAssign.PF = payload.PF;
+            salaryAssign.TotalDeductions = payload.TotalDeductions;
+            salaryAssign.NetSalary = payload.NetSalary;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -225,10 +234,19 @@ public class EmployeeController : ControllerBase
                 EmployeeId = payload.EmployeeId,
                 BasicSalary = payload.BasicSalary,
                 GrossSalary = payload.GrossSalary,
-                HouseRent = payload.HouseRent,
                 MedicalAllowance = payload.MedicalAllowance,
                 Conveyance = payload.Conveyance,
-                Status = payload.Status
+                Status = payload.Status,
+                AdvanceSalary = payload.AdvanceSalary,
+                CarAllowance = payload.CarAllowance,
+                CcCharge = payload.CcCharge,
+                LunchDeduction = payload.LunchDeduction,
+                LoanRepayment = payload.LoanRepayment,
+                LastMonthLoanPayment = payload.LastMonthLoanPayment,
+                PF = payload.PF,
+                TotalDeductions = payload.TotalDeductions,
+                NetSalary = payload.NetSalary
+
             };
             await _context.SalaryAssign.AddAsync(salaryAssign);
             await _context.SaveChangesAsync();
@@ -360,7 +378,6 @@ public class EmployeeController : ControllerBase
             EmployeeId = payload.EmployeeId,
             GrossSalary = salaryAssign.GrossSalary,
             BasicSalary = salaryAssign.BasicSalary,
-            HouseRent = salaryAssign.HouseRent,
             MedicalAllowance = salaryAssign.MedicalAllowance,
             Conveyance = salaryAssign.Conveyance,
             Month = payload.SalaryMonth,
