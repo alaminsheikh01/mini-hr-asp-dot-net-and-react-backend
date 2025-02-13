@@ -16,4 +16,5 @@ public class EmployeePayload
     public int? DesignationId { get; set; }
     public int? DepartmentId { get; set; }   
     public DateTime? DateOfJoining { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 }

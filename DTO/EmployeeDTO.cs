@@ -20,6 +20,7 @@ public class EmployeeDTO
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
     public DateTime? DateOfJoining { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public bool? Status { get; set; }
     public decimal? GrossSalary { get; set; }
     public decimal? BasicSalary { get; set; }

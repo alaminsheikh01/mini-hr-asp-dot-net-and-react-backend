@@ -147,12 +147,14 @@ public class EmployeeController : ControllerBase
                                       Grade = e.Grade ?? 0,
                                       InsuranceNumber = e.InsuranceNumber,
                                       TINNumber = e.TINNumber ?? 0,
-                                      EmployeeStatus = e.employeeStatus,
+                                      EmployeeStatus = e.EmployeeStatus,
                                       DesignationId = e.DesignationId ?? 0,
                                       DesignationName = des.Name,
                                       DepartmentId = e.DepartmentId ?? 0,
                                       DepartmentName = dp.Name,
-                                      DateOfJoining = e.DateOfJoining ?? System.DateTime.Now
+                                      DateOfJoining = e.DateOfJoining ?? System.DateTime.Now,
+                                      DateOfBirth = e.DateOfBirth ?? System.DateTime.Now
+
                                   }).FirstOrDefaultAsync();
         return Ok(employeeById);
     }
@@ -183,6 +185,42 @@ public class EmployeeController : ControllerBase
                                         Status = sa.Status || false
                                     }).ToListAsync();
         return Ok(employeeAssign);
+    }
+
+    [HttpGet]
+    [Route("salaryAssignById")]
+    public async Task<ActionResult> GetSalaryAssignById(int SalaryAssignId)
+    {
+        var salaryAssign = await (from sa in _context.SalaryAssign
+                                  join e in _context.Employee on sa.EmployeeId equals e.Id
+                                  join des in _context.Designation on e.DesignationId equals des.Id
+                                  join dp in _context.Department on e.DepartmentId equals dp.Id
+                                  where sa.Id == SalaryAssignId
+                                  select new SalaryAssignDTO
+                                  {
+                                      SalaryAssignId = sa.Id,
+                                      EmployeeId = e.Id,
+                                      EmployeeName = e.FirstName + " " + e.LastName,
+                                      DepartmentId = e.DepartmentId ?? 0,
+                                      DepartmentName = dp.Name,
+                                      DesignationId = e.DesignationId ?? 0,
+                                      DesignationName = des.Name,
+                                      BasicSalary = sa.BasicSalary,
+                                      GrossSalary = sa.GrossSalary,
+                                      MedicalAllowance = sa.MedicalAllowance,
+                                      Conveyance = sa.Conveyance,
+                                      AdvanceSalary = sa.AdvanceSalary,
+                                      CarAllowance = sa.CarAllowance,
+                                      CcCharge = sa.CcCharge,
+                                      LunchDeduction = sa.LunchDeduction,
+                                      LoanRepayment = sa.LoanRepayment,
+                                      LastMonthLoanPayment = sa.LastMonthLoanPayment,
+                                      PF = sa.PF,
+                                      TotalDeductions = sa.TotalDeductions,
+                                      NetSalary = sa.NetSalary,
+                                      Grade = e.Grade ?? 0,
+                                  }).FirstOrDefaultAsync();
+        return Ok(salaryAssign);
     }
 
     [HttpPost]
@@ -291,10 +329,11 @@ public class EmployeeController : ControllerBase
             Grade = data.Grade ?? 0,
             InsuranceNumber = data.InsuranceNumber ?? "",
             TINNumber = data.TINNumber ?? 0,
-            employeeStatus = data.EmployeeStatus ?? "",
+            EmployeeStatus = data.EmployeeStatus ?? "",
             DesignationId = data.DesignationId ?? 0,
             DepartmentId = data.DepartmentId ?? 0,
-            DateOfJoining = data.DateOfJoining ?? System.DateTime.Now
+            DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
+            DateOfBirth = data.DateOfJoining ?? System.DateTime.Now
         }).ToList();
 
         var signUp = payload.Select(data => new SignUp
@@ -338,10 +377,11 @@ public class EmployeeController : ControllerBase
         employee.Grade = payload.Grade ?? 0;
         employee.InsuranceNumber = payload.InsuranceNumber ?? "";
         employee.TINNumber = payload.TINNumber ?? 0;
-        employee.employeeStatus = payload.EmployeeStatus ?? "";
+        employee.EmployeeStatus = payload.EmployeeStatus ?? "";
         employee.DesignationId = payload.DesignationId ?? 0;
         employee.DepartmentId = payload.DepartmentId ?? 0;
         employee.DateOfJoining = payload.DateOfJoining ?? System.DateTime.Now;
+        employee.DateOfBirth = payload.DateOfBirth ?? System.DateTime.Now;
         try
         {
             await _context.SaveChangesAsync();
