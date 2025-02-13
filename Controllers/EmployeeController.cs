@@ -423,7 +423,7 @@ public class EmployeeController : ControllerBase
             Month = payload.SalaryMonth,
             Year = payload.SalaryYear,
             DepartmentId = payload.DepartmentId,
-            DesignationId = payload.DesignationId
+            DesignationId = payload.DesignationId,
         };
 
         await _context.EmployeeSalary.AddAsync(employeeSalary);
@@ -441,6 +441,7 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult> GetEmployeeSalaryLanding(int? EmployeeId)
     {
         var employeeSalary = await (from es in _context.EmployeeSalary
+                                    join sa in _context.SalaryAssign on es.EmployeeId equals sa.EmployeeId
                                     join dp in _context.Department on es.DepartmentId equals dp.Id
                                     join des in _context.Designation on es.DesignationId equals des.Id
                                     join e in _context.Employee on es.EmployeeId equals e.Id
@@ -453,7 +454,21 @@ public class EmployeeController : ControllerBase
                                         DepartmentName = dp.Name,
                                         DesignationName = des.Name,
                                         SalaryMonth = es.Month,
-                                        SalaryYear = es.Year
+                                        SalaryYear = es.Year,
+                                        BasicSalary = sa.BasicSalary,
+                                        MedicalAllowance = sa.MedicalAllowance,
+                                        Conveyance = sa.Conveyance,
+                                        GrossSalary = sa.GrossSalary,
+                                        AdvanceSalary = sa.AdvanceSalary,
+                                        TotalDeductions = sa.TotalDeductions,
+                                        NetSalary = sa.NetSalary,
+                                        CarAllowance = sa.CarAllowance,
+                                        CcCharge = sa.CcCharge,
+                                        LunchDeduction = sa.LunchDeduction,
+                                        LoanRepayment = sa.LoanRepayment,
+                                        LastMonthLoanPayment = sa.LastMonthLoanPayment,
+                                        PF = sa.PF,
+                                        Grade = e.Grade
                                     }).ToListAsync();
         return Ok(employeeSalary);
     }
@@ -478,7 +493,6 @@ public class EmployeeController : ControllerBase
                                                SalaryYear = es.Year,
                                                BasicSalary = es.BasicSalary,
                                                GrossSalary = es.GrossSalary,
-                                               HouseRent = es.HouseRent,
                                                MedicalAllowance = es.MedicalAllowance,
                                                Conveyance = es.Conveyance
                                            }).FirstOrDefaultAsync();

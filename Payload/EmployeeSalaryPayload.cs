@@ -11,4 +11,5 @@ public class EmployeeSalaryPayload {
     public int SalaryYear { get; set; }
     public int DepartmentId { get; set; }
     public int DesignationId { get; set; }
+    public int SalaryAssignId {get; set;}
 }
