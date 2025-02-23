@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250220064202_addedHouseRent")]
+    partial class addedHouseRent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,16 +235,10 @@ namespace FirstOne.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("FestivalBonus")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("GrossSalary")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("HouseRent")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("IncomeTax")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("LastMonthLoanPayment")
@@ -261,9 +257,6 @@ namespace FirstOne.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PF")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PerformanceBonus")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("SalaryAssignId")

@@ -139,6 +139,7 @@ public class EmployeeController : ControllerBase
                                   {
                                       FirstName = e.FirstName,
                                       LastName = e.LastName,
+                                      EmployeeCode = e.EmployeeCode,
                                       Email = e.Email,
                                       PhoneNumber = e.PhoneNumber,
                                       Address = e.Address,
@@ -158,140 +159,6 @@ public class EmployeeController : ControllerBase
                                   }).FirstOrDefaultAsync();
         return Ok(employeeById);
     }
-
-
-    [HttpGet]
-    [Route("employeeAssign")]
-    public async Task<ActionResult> GetEmployeeAssign(int? EmployeeId)
-    {
-        var employeeAssign = await (from e in _context.Employee
-                                    join des in _context.Designation on e.DesignationId equals des.Id
-                                    join dp in _context.Department on e.DepartmentId equals dp.Id
-                                    join sa in _context.SalaryAssign on e.Id equals sa.EmployeeId into saGroup
-                                    from sa in saGroup.DefaultIfEmpty()
-                                    where EmployeeId == null || EmployeeId == 0 || e.Id == EmployeeId
-                                    select new EmployeeDTO
-                                    {
-                                        SalaryAssignId = sa.Id,
-                                        EmployeeId = e.Id,
-                                        FirstName = e.FirstName,
-                                        LastName = e.LastName,
-                                        DesignationId = e.DesignationId ?? 0,
-                                        DesignationName = des.Name,
-                                        DepartmentId = e.DepartmentId ?? 0,
-                                        DepartmentName = dp.Name,
-                                        BasicSalary = sa.BasicSalary,
-                                        GrossSalary = sa.GrossSalary,
-                                        Status = sa.Status || false
-                                    }).ToListAsync();
-        return Ok(employeeAssign);
-    }
-
-    [HttpGet]
-    [Route("salaryAssignById")]
-    public async Task<ActionResult> GetSalaryAssignById(int SalaryAssignId)
-    {
-        var salaryAssign = await (from sa in _context.SalaryAssign
-                                  join e in _context.Employee on sa.EmployeeId equals e.Id
-                                  join des in _context.Designation on e.DesignationId equals des.Id
-                                  join dp in _context.Department on e.DepartmentId equals dp.Id
-                                  where sa.Id == SalaryAssignId
-                                  select new SalaryAssignDTO
-                                  {
-                                      SalaryAssignId = sa.Id,
-                                      EmployeeId = e.Id,
-                                      EmployeeName = e.FirstName + " " + e.LastName,
-                                      DepartmentId = e.DepartmentId ?? 0,
-                                      DepartmentName = dp.Name,
-                                      DesignationId = e.DesignationId ?? 0,
-                                      DesignationName = des.Name,
-                                      BasicSalary = sa.BasicSalary,
-                                      GrossSalary = sa.GrossSalary,
-                                      MedicalAllowance = sa.MedicalAllowance,
-                                      Conveyance = sa.Conveyance,
-                                      AdvanceSalary = sa.AdvanceSalary,
-                                      CarAllowance = sa.CarAllowance,
-                                      CcCharge = sa.CcCharge,
-                                      LunchDeduction = sa.LunchDeduction,
-                                      LoanRepayment = sa.LoanRepayment,
-                                      LastMonthLoanPayment = sa.LastMonthLoanPayment,
-                                      PF = sa.PF,
-                                      TotalDeductions = sa.TotalDeductions,
-                                      NetSalary = sa.NetSalary,
-                                      Grade = e.Grade ?? 0,
-                                  }).FirstOrDefaultAsync();
-        return Ok(salaryAssign);
-    }
-
-    [HttpPost]
-    [Route("assignSalary")]
-    public async Task<ActionResult> AssignSalary([FromBody] SalaryAssign payload)
-    {
-        if (payload == null)
-        {
-            return BadRequest("No data found to save");
-        }
-
-        if (payload.Id > 0)
-        {
-            var salaryAssign = await _context.SalaryAssign.FindAsync(payload.Id);
-            if (salaryAssign == null)
-            {
-                return NotFound("Record not found to update");
-            }
-            salaryAssign.EmployeeId = payload.EmployeeId;
-            salaryAssign.BasicSalary = payload.BasicSalary;
-            salaryAssign.GrossSalary = payload.GrossSalary;
-            salaryAssign.MedicalAllowance = payload.MedicalAllowance;
-            salaryAssign.Conveyance = payload.Conveyance;
-            salaryAssign.Status = payload.Status;
-            salaryAssign.AdvanceSalary = payload.AdvanceSalary;
-            salaryAssign.CarAllowance = payload.CarAllowance;
-            salaryAssign.CcCharge = payload.CcCharge;
-            salaryAssign.LunchDeduction = payload.LunchDeduction;
-            salaryAssign.LoanRepayment = payload.LoanRepayment;
-            salaryAssign.LastMonthLoanPayment = payload.LastMonthLoanPayment;
-            salaryAssign.PF = payload.PF;
-            salaryAssign.TotalDeductions = payload.TotalDeductions;
-            salaryAssign.NetSalary = payload.NetSalary;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Ok(salaryAssign);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return NotFound();
-            }
-        }
-        else
-        {
-            var salaryAssign = new SalaryAssign
-            {
-                EmployeeId = payload.EmployeeId,
-                BasicSalary = payload.BasicSalary,
-                GrossSalary = payload.GrossSalary,
-                MedicalAllowance = payload.MedicalAllowance,
-                Conveyance = payload.Conveyance,
-                Status = payload.Status,
-                AdvanceSalary = payload.AdvanceSalary,
-                CarAllowance = payload.CarAllowance,
-                CcCharge = payload.CcCharge,
-                LunchDeduction = payload.LunchDeduction,
-                LoanRepayment = payload.LoanRepayment,
-                LastMonthLoanPayment = payload.LastMonthLoanPayment,
-                PF = payload.PF,
-                TotalDeductions = payload.TotalDeductions,
-                NetSalary = payload.NetSalary
-
-            };
-            await _context.SalaryAssign.AddAsync(salaryAssign);
-            await _context.SaveChangesAsync();
-            return Ok(salaryAssign);
-        }
-    }
-
 
     [HttpPost]
     public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
@@ -321,6 +188,7 @@ public class EmployeeController : ControllerBase
         {
             FirstName = data.FirstName,
             LastName = data.LastName,
+            EmployeeCode = data.EmployeeCode ?? "",
             Email = data.Email,
             PhoneNumber = data.PhoneNumber,
             Address = data.Address ?? "",
@@ -369,6 +237,7 @@ public class EmployeeController : ControllerBase
         }
         employee.FirstName = payload.FirstName;
         employee.LastName = payload.LastName;
+        employee.EmployeeCode = payload.EmployeeCode;
         employee.Email = payload.Email;
         employee.PhoneNumber = payload.PhoneNumber;
         employee.Address = payload.Address;
@@ -392,6 +261,153 @@ public class EmployeeController : ControllerBase
             return NotFound();
         }
     }
+
+
+    [HttpGet]
+    [Route("employeeAssign")]
+    public async Task<ActionResult> GetEmployeeAssign(int? EmployeeId)
+    {
+        var employeeAssign = await (from e in _context.Employee
+                                    join des in _context.Designation on e.DesignationId equals des.Id
+                                    join dp in _context.Department on e.DepartmentId equals dp.Id
+                                    join sa in _context.SalaryAssign on e.Id equals sa.EmployeeId into saGroup
+                                    from sa in saGroup.DefaultIfEmpty()
+                                    where EmployeeId == null || EmployeeId == 0 || e.Id == EmployeeId
+                                    select new EmployeeDTO
+                                    {
+                                        SalaryAssignId = sa.Id,
+                                        EmployeeId = e.Id,
+                                        FirstName = e.FirstName,
+                                        LastName = e.LastName,
+                                        DesignationId = e.DesignationId ?? 0,
+                                        DesignationName = des.Name,
+                                        DepartmentId = e.DepartmentId ?? 0,
+                                        DepartmentName = dp.Name,
+                                        BasicSalary = sa.BasicSalary,
+                                        GrossSalary = sa.GrossSalary,
+                                        Status = sa.Status || false,
+                                        Grade = e.Grade ?? 0
+                                    }).ToListAsync();
+        return Ok(employeeAssign);
+    }
+
+    [HttpGet]
+    [Route("salaryAssignById")]
+    public async Task<ActionResult> GetSalaryAssignById(int SalaryAssignId)
+    {
+        var salaryAssign = await (from sa in _context.SalaryAssign
+                                  join e in _context.Employee on sa.EmployeeId equals e.Id
+                                  join des in _context.Designation on e.DesignationId equals des.Id
+                                  join dp in _context.Department on e.DepartmentId equals dp.Id
+                                  where sa.Id == SalaryAssignId
+                                  select new SalaryAssignDTO
+                                  {
+                                      SalaryAssignId = sa.Id,
+                                      EmployeeId = e.Id,
+                                      EmployeeName = e.FirstName + " " + e.LastName,
+                                      DepartmentId = e.DepartmentId ?? 0,
+                                      DepartmentName = dp.Name,
+                                      DesignationId = e.DesignationId ?? 0,
+                                      DesignationName = des.Name,
+                                      BasicSalary = sa.BasicSalary,
+                                      GrossSalary = sa.GrossSalary,
+                                      MedicalAllowance = sa.MedicalAllowance,
+                                      HouseRent = sa.HouseRent,
+                                      Conveyance = sa.Conveyance,
+                                      AdvanceSalary = sa.AdvanceSalary,
+                                      CarAllowance = sa.CarAllowance,
+                                      CcCharge = sa.CcCharge,
+                                      LunchDeduction = sa.LunchDeduction,
+                                      LoanRepayment = sa.LoanRepayment,
+                                      LastMonthLoanPayment = sa.LastMonthLoanPayment,
+                                      PF = sa.PF,
+                                      TotalDeductions = sa.TotalDeductions,
+                                      NetSalary = sa.NetSalary,
+                                      Grade = e.Grade ?? 0,
+                                      PerformanceBonus = sa.PerformanceBonus,
+                                      FestivalBonus = sa.FestivalBonus,
+                                      IncomeTax = sa.IncomeTax
+                                  }).FirstOrDefaultAsync();
+        return Ok(salaryAssign);
+    }
+
+    [HttpPost]
+    [Route("assignSalary")]
+    public async Task<ActionResult> AssignSalary([FromBody] SalaryAssign payload)
+    {
+        if (payload == null)
+        {
+            return BadRequest("No data found to save");
+        }
+
+        if (payload.Id > 0)
+        {
+            var salaryAssign = await _context.SalaryAssign.FindAsync(payload.Id);
+            if (salaryAssign == null)
+            {
+                return NotFound("Record not found to update");
+            }
+            salaryAssign.EmployeeId = payload.EmployeeId;
+            salaryAssign.BasicSalary = payload.BasicSalary;
+            salaryAssign.GrossSalary = payload.GrossSalary;
+            salaryAssign.MedicalAllowance = payload.MedicalAllowance;
+            salaryAssign.Conveyance = payload.Conveyance;
+            salaryAssign.Status = payload.Status;
+            salaryAssign.AdvanceSalary = payload.AdvanceSalary;
+            salaryAssign.CarAllowance = payload.CarAllowance;
+            salaryAssign.CcCharge = payload.CcCharge;
+            salaryAssign.LunchDeduction = payload.LunchDeduction;
+            salaryAssign.LoanRepayment = payload.LoanRepayment;
+            salaryAssign.LastMonthLoanPayment = payload.LastMonthLoanPayment;
+            salaryAssign.PF = payload.PF;
+            salaryAssign.TotalDeductions = payload.TotalDeductions;
+            salaryAssign.NetSalary = payload.NetSalary;
+            salaryAssign.HouseRent = payload.HouseRent;
+            salaryAssign.PerformanceBonus = payload.PerformanceBonus;
+            salaryAssign.FestivalBonus = payload.FestivalBonus;
+            salaryAssign.IncomeTax = payload.IncomeTax;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(salaryAssign);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+            }
+        }
+        else
+        {
+            var salaryAssign = new SalaryAssign
+            {
+                EmployeeId = payload.EmployeeId,
+                BasicSalary = payload.BasicSalary,
+                GrossSalary = payload.GrossSalary,
+                MedicalAllowance = payload.MedicalAllowance,
+                Conveyance = payload.Conveyance,
+                Status = payload.Status,
+                AdvanceSalary = payload.AdvanceSalary,
+                CarAllowance = payload.CarAllowance,
+                CcCharge = payload.CcCharge,
+                LunchDeduction = payload.LunchDeduction,
+                LoanRepayment = payload.LoanRepayment,
+                LastMonthLoanPayment = payload.LastMonthLoanPayment,
+                PF = payload.PF,
+                TotalDeductions = payload.TotalDeductions,
+                NetSalary = payload.NetSalary,
+                HouseRent = payload.HouseRent,
+                PerformanceBonus = payload.PerformanceBonus,
+                FestivalBonus = payload.FestivalBonus,
+                IncomeTax = payload.IncomeTax
+
+            };
+            await _context.SalaryAssign.AddAsync(salaryAssign);
+            await _context.SaveChangesAsync();
+            return Ok(salaryAssign);
+        }
+    }
+
 
     [HttpPost]
     [Route("addEmployeeSalary")]

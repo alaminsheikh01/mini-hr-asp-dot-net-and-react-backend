@@ -11,6 +11,10 @@ public class SalaryAssignDTO
     public string DesignationName { get; set; }
     public decimal BasicSalary { get; set; }
     public decimal MedicalAllowance { get; set; }
+    public decimal HouseRent { get; set; }
+    public decimal PerformanceBonus { get; set; }
+    public decimal FestivalBonus { get; set; }
+    public decimal IncomeTax { get; set; }
     public decimal Conveyance { get; set; }
     public decimal GrossSalary { get; set; }
     public decimal AdvanceSalary { get; set; }
