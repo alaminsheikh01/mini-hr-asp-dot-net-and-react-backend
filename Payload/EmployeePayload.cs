@@ -15,7 +15,9 @@ public class EmployeePayload
     public int? TINNumber { get; set; }
     public string? EmployeeStatus { get; set; }
     public int? DesignationId { get; set; }
+    public string? DesignationName { get; set; }
     public int? DepartmentId { get; set; }   
+    public string? DepartmentName { get; set; }
     public DateTime? DateOfJoining { get; set; }
     public DateTime? DateOfBirth { get; set; }
 }

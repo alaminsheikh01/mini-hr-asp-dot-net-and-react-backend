@@ -161,7 +161,6 @@ public class EmployeeController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
     {
-
         if (payload == null || payload.Count == 0)
         {
             return BadRequest("No data found to save");
@@ -169,6 +168,7 @@ public class EmployeeController : ControllerBase
 
         var payloadEmails = payload.Select(p => p.Email).ToList();
 
+        // Check for existing employees
         var existingEmails = await _context.Employee
             .Where(e => payloadEmails.Contains(e.Email))
             .Select(e => e.Email)
@@ -178,37 +178,72 @@ public class EmployeeController : ControllerBase
         {
             return BadRequest(new
             {
-                message = $"Emails already exist",
+                message = "Emails already exist",
             });
         }
 
-        var employees = payload.Select(data => new Employee
-        {
-            FirstName = data.FirstName,
-            LastName = data.LastName,
-            EmployeeCode = data.EmployeeCode ?? "",
-            Email = data.Email,
-            PhoneNumber = data.PhoneNumber,
-            Address = data.Address ?? "",
-            Gender = data.Gender ?? "",
-            Grade = data.Grade ?? 0,
-            InsuranceNumber = data.InsuranceNumber ?? "",
-            TINNumber = data.TINNumber ?? 0,
-            EmployeeStatus = data.EmployeeStatus ?? "",
-            DesignationId = data.DesignationId ?? 0,
-            DepartmentId = data.DepartmentId ?? 0,
-            DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
-            DateOfBirth = data.DateOfJoining ?? System.DateTime.Now
-        }).ToList();
+        // Get existing designations & departments
+        var existingDesignations = await _context.Designation.ToListAsync();
+        var existingDepartments = await _context.Department.ToListAsync();
 
-        var signUp = payload.Select(data => new SignUp
+        // Employee and SignUp lists
+        var employees = new List<Employee>();
+        var signUp = new List<SignUp>();
+
+        foreach (var data in payload)
         {
-            Email = data.Email,
-            Password = "123456",
-            UserName = data.FirstName + " " + data.LastName,
-            Role = "User",
-            IsMasterUser = false
-        }).ToList();
+            // Handle Department
+            var department = existingDepartments.FirstOrDefault(d => d.Name == data.DepartmentName);
+            if (department == null)
+            {
+                department = new Department { Name = data.DepartmentName };
+                _context.Department.Add(department);
+                await _context.SaveChangesAsync(); 
+                existingDepartments.Add(department);
+            }
+
+            // Handle Designation
+            var designation = existingDesignations.FirstOrDefault(d => d.Name == data.DesignationName);
+            if (designation == null)
+            {
+                designation = new Designation { Name = data.DesignationName };
+                _context.Designation.Add(designation);
+                await _context.SaveChangesAsync();  // Ensure ID is generated
+                existingDesignations.Add(designation); // Update cache
+            }
+
+            // Create Employee
+            employees.Add(new Employee
+            {
+                FirstName = data.FirstName,
+                LastName = data.LastName,
+                EmployeeCode = data.EmployeeCode ?? "",
+                Email = data.Email,
+                PhoneNumber = data.PhoneNumber,
+                Address = data.Address ?? "",
+                Gender = data.Gender ?? "",
+                Grade = data.Grade ?? 0,
+                InsuranceNumber = data.InsuranceNumber ?? "",
+                TINNumber = data.TINNumber ?? 0,
+                EmployeeStatus = data.EmployeeStatus ?? "",
+                DesignationId = designation.Id,
+                DesignationName = designation.Name,
+                DepartmentId = department.Id,
+                DepartmentName = department.Name,
+                DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
+                DateOfBirth = data.DateOfBirth ?? System.DateTime.Now
+            });
+
+            // Create SignUp entry
+            signUp.Add(new SignUp
+            {
+                Email = data.Email,
+                Password = "123456",
+                UserName = data.FirstName + " " + data.LastName,
+                Role = "User",
+                IsMasterUser = false
+            });
+        }
 
         await _context.Employee.AddRangeAsync(employees);
         await _context.SignUp.AddRangeAsync(signUp);
@@ -216,12 +251,77 @@ public class EmployeeController : ControllerBase
 
         return Ok(new
         {
-            message = "Employee added successfully",
+            message = "Employees added successfully",
             data = employees,
             user = signUp
         });
-
     }
+
+    // public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
+    // {
+
+    //     if (payload == null || payload.Count == 0)
+    //     {
+    //         return BadRequest("No data found to save");
+    //     }
+
+    //     var payloadEmails = payload.Select(p => p.Email).ToList();
+
+    //     var existingEmails = await _context.Employee
+    //         .Where(e => payloadEmails.Contains(e.Email))
+    //         .Select(e => e.Email)
+    //         .ToListAsync();
+
+    //     if (existingEmails.Any())
+    //     {
+    //         return BadRequest(new
+    //         {
+    //             message = $"Emails already exist",
+    //         });
+    //     }
+
+    //     var employees = payload.Select(data => new Employee
+    //     {
+    //         FirstName = data.FirstName,
+    //         LastName = data.LastName,
+    //         EmployeeCode = data.EmployeeCode ?? "",
+    //         Email = data.Email,
+    //         PhoneNumber = data.PhoneNumber,
+    //         Address = data.Address ?? "",
+    //         Gender = data.Gender ?? "",
+    //         Grade = data.Grade ?? 0,
+    //         InsuranceNumber = data.InsuranceNumber ?? "",
+    //         TINNumber = data.TINNumber ?? 0,
+    //         EmployeeStatus = data.EmployeeStatus ?? "",
+    //         DesignationId = data.DesignationId ?? 0,
+    //         DesignationName = data.DesignationName ?? "",
+    //         DepartmentId = data.DepartmentId ?? 0,
+    //         DepartmentName = data.DepartmentName ?? "",
+    //         DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
+    //         DateOfBirth = data.DateOfJoining ?? System.DateTime.Now
+    //     }).ToList();
+
+    //     var signUp = payload.Select(data => new SignUp
+    //     {
+    //         Email = data.Email,
+    //         Password = "123456",
+    //         UserName = data.FirstName + " " + data.LastName,
+    //         Role = "User",
+    //         IsMasterUser = false
+    //     }).ToList();
+
+    //     await _context.Employee.AddRangeAsync(employees);
+    //     await _context.SignUp.AddRangeAsync(signUp);
+    //     await _context.SaveChangesAsync();
+
+    //     return Ok(new
+    //     {
+    //         message = "Employee added successfully",
+    //         data = employees,
+    //         user = signUp
+    //     });
+
+    // }
 
     [HttpPut("update/{id}")]
     public async Task<ActionResult> UpdateEmployee([FromBody] EmployeePayload payload, int id)

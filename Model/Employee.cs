@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class Employee
 {
@@ -24,7 +25,9 @@ public class Employee
     [ForeignKey("Department")]
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
+    [JsonIgnore]
     public Designation Designation { get; set; }
+    [JsonIgnore]
     public Department Department { get; set; }
 
 }
