@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250224062608_addedSalaryTable2")]
+    partial class addedSalaryTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,11 +360,13 @@ namespace FirstOne.Migrations
 
             modelBuilder.Entity("EmployeeSalary", b =>
                 {
-                    b.HasOne("SalaryHeader", null)
+                    b.HasOne("SalaryHeader", "SalaryHeader")
                         .WithMany("EmployeeSalaries")
                         .HasForeignKey("SalaryHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("SalaryHeader");
                 });
 
             modelBuilder.Entity("Department", b =>

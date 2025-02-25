@@ -9,7 +9,12 @@ public class EmployeeSalaryDTO
     public string DepartmentName { get; set; }
     public string DesignationName { get; set; }
     public string SalaryMonth { get; set; }
+    public decimal HouseRent { get; set; }
     public int SalaryYear { get; set; }
+    public decimal PerformanceBonus { get; set; }
+    public decimal FestivalBonus { get; set; }
+    public decimal IncomeTax { get; set; }
+    
     public decimal BasicSalary { get; set; }
     public decimal MedicalAllowance { get; set; }
     public decimal Conveyance { get; set; }
@@ -24,6 +29,7 @@ public class EmployeeSalaryDTO
     public decimal LastMonthLoanPayment { get; set; }
     public decimal PF { get; set; }
     public int? Grade { get; set; }
+    public string SalaryCode { get; set; }
 
 
 }
