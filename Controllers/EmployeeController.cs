@@ -118,7 +118,6 @@ public class EmployeeController : ControllerBase
                                    Email = e.Email,
                                    PhoneNumber = e.PhoneNumber,
                                    Address = e.Address,
-                                   City = e.City,
                                    DesignationId = e.DesignationId ?? 0,
                                    DesignationName = des.Name,
                                    DepartmentId = e.DepartmentId ?? 0,
@@ -143,7 +142,6 @@ public class EmployeeController : ControllerBase
                                       Email = e.Email,
                                       PhoneNumber = e.PhoneNumber,
                                       Address = e.Address,
-                                      City = e.City,
                                       Gender = e.Gender,
                                       Grade = e.Grade ?? 0,
                                       InsuranceNumber = e.InsuranceNumber,
@@ -192,7 +190,6 @@ public class EmployeeController : ControllerBase
             Email = data.Email,
             PhoneNumber = data.PhoneNumber,
             Address = data.Address ?? "",
-            City = data.City ?? "",
             Gender = data.Gender ?? "",
             Grade = data.Grade ?? 0,
             InsuranceNumber = data.InsuranceNumber ?? "",
@@ -241,7 +238,6 @@ public class EmployeeController : ControllerBase
         employee.Email = payload.Email;
         employee.PhoneNumber = payload.PhoneNumber;
         employee.Address = payload.Address;
-        employee.City = payload.City;
         employee.Gender = payload.Gender ?? "";
         employee.Grade = payload.Grade ?? 0;
         employee.InsuranceNumber = payload.InsuranceNumber ?? "";

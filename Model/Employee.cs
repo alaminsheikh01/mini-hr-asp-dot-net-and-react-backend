@@ -10,7 +10,6 @@ public class Employee
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
     public string? Address { get; set; }
-    public string? City { get; set; }
     public string? Gender { get; set; }
     public int? Grade { get; set; }
     public string? InsuranceNumber { get; set; }
@@ -21,8 +20,10 @@ public class Employee
 
     [ForeignKey("Designation")]
     public int? DesignationId { get; set; }
+    public string? DesignationName { get; set; }
     [ForeignKey("Department")]
     public int? DepartmentId { get; set; }
+    public string? DepartmentName { get; set; }
     public Designation Designation { get; set; }
     public Department Department { get; set; }
 
