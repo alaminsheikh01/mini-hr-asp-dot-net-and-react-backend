@@ -168,7 +168,6 @@ public class EmployeeController : ControllerBase
 
         var payloadEmails = payload.Select(p => p.Email).ToList();
 
-        // Check for existing employees
         var existingEmails = await _context.Employee
             .Where(e => payloadEmails.Contains(e.Email))
             .Select(e => e.Email)
@@ -182,37 +181,36 @@ public class EmployeeController : ControllerBase
             });
         }
 
-        // Get existing designations & departments
         var existingDesignations = await _context.Designation.ToListAsync();
         var existingDepartments = await _context.Department.ToListAsync();
 
-        // Employee and SignUp lists
         var employees = new List<Employee>();
         var signUp = new List<SignUp>();
 
         foreach (var data in payload)
         {
-            // Handle Department
-            var department = existingDepartments.FirstOrDefault(d => d.Name == data.DepartmentName);
-            if (department == null)
+            var department = existingDepartments.FirstOrDefault(d => d.Id == data.DepartmentId)
+                             ?? existingDepartments.FirstOrDefault(d => d.Name == data.DepartmentName);
+
+            if (department == null && !string.IsNullOrWhiteSpace(data.DepartmentName))
             {
                 department = new Department { Name = data.DepartmentName };
                 _context.Department.Add(department);
-                await _context.SaveChangesAsync(); 
+                await _context.SaveChangesAsync();
                 existingDepartments.Add(department);
             }
 
-            // Handle Designation
-            var designation = existingDesignations.FirstOrDefault(d => d.Name == data.DesignationName);
-            if (designation == null)
+            var designation = existingDesignations.FirstOrDefault(d => d.Id == data.DesignationId)
+                              ?? existingDesignations.FirstOrDefault(d => d.Name == data.DesignationName);
+
+            if (designation == null && !string.IsNullOrWhiteSpace(data.DesignationName))
             {
                 designation = new Designation { Name = data.DesignationName };
                 _context.Designation.Add(designation);
-                await _context.SaveChangesAsync();  // Ensure ID is generated
-                existingDesignations.Add(designation); // Update cache
+                await _context.SaveChangesAsync();
+                existingDesignations.Add(designation);
             }
 
-            // Create Employee
             employees.Add(new Employee
             {
                 FirstName = data.FirstName,
@@ -226,15 +224,14 @@ public class EmployeeController : ControllerBase
                 InsuranceNumber = data.InsuranceNumber ?? "",
                 TINNumber = data.TINNumber ?? 0,
                 EmployeeStatus = data.EmployeeStatus ?? "",
-                DesignationId = designation.Id,
-                DesignationName = designation.Name,
-                DepartmentId = department.Id,
-                DepartmentName = department.Name,
+                DesignationId = designation?.Id ?? 0,
+                DesignationName = designation?.Name ?? "",
+                DepartmentId = department?.Id ?? 0,
+                DepartmentName = department?.Name ?? "",
                 DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
                 DateOfBirth = data.DateOfBirth ?? System.DateTime.Now
             });
 
-            // Create SignUp entry
             signUp.Add(new SignUp
             {
                 Email = data.Email,
