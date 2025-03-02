@@ -2690,11 +2690,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Personal Project\\master-project-hr\\Back-end\\PayrollSystem.csproj",
+      "projectUniqueName": "d:\\Personal Project\\mini-payroll\\Back-end\\PayrollSystem.csproj",
       "projectName": "PayrollSystem",
-      "projectPath": "D:\\Personal Project\\master-project-hr\\Back-end\\PayrollSystem.csproj",
+      "projectPath": "d:\\Personal Project\\mini-payroll\\Back-end\\PayrollSystem.csproj",
       "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
-      "outputPath": "D:\\Personal Project\\master-project-hr\\Back-end\\obj\\",
+      "outputPath": "d:\\Personal Project\\mini-payroll\\Back-end\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\hp\\AppData\\Roaming\\NuGet\\NuGet.Config"
