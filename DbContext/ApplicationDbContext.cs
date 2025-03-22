@@ -13,5 +13,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<SignUp> SignUp { get; set; }
     public DbSet<Loan> Loan { get; set; }
     public DbSet<SalaryHeader> SalaryHeader { get; set; }
+    public DbSet<PayScaleSetup> PayScaleSetup { get; set; }
 
 }

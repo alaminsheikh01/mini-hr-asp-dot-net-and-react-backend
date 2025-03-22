@@ -229,7 +229,26 @@ public class EmployeeController : ControllerBase
                 DepartmentId = department?.Id ?? 0,
                 DepartmentName = department?.Name ?? "",
                 DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
-                DateOfBirth = data.DateOfBirth ?? System.DateTime.Now
+                DateOfBirth = data.DateOfBirth ?? System.DateTime.Now,
+                PresentAddress = data.PresentAddress ?? "",
+                PermanentAddress = data.PermanentAddress ?? "",
+                EmergencyContact = data.EmergencyContact ?? "",
+                NID = data.NID ?? "",
+                BloodGroup = data.BloodGroup ?? "",
+                ConfirmationDate = data.ConfirmationDate ?? System.DateTime.Now,
+                RetirementOrResignation = data.RetirementOrResignation ?? System.DateTime.Now,
+                ServicePeriod = data.ServicePeriod ?? "",
+                SalaryAccountNumber = data.SalaryAccountNumber ?? "",
+                ETIN = data.ETIN ?? "",
+                AcademicQualifications = data.AcademicQualifications ?? "",
+                CertificateVerification = data.CertificateVerification ?? false,
+                PoliceVerification = data.PoliceVerification ?? false,
+                DisciplinaryAction = data.DisciplinaryAction ?? false,
+                JobLocation = data.JobLocation ?? "",
+                EmployeeType = data.EmployeeType ?? "",
+                EmployeeSalaryGrade = data.EmployeeSalaryGrade ?? "",
+                Status = data.Status ?? ""
+
             });
 
             signUp.Add(new SignUp
@@ -253,72 +272,6 @@ public class EmployeeController : ControllerBase
             user = signUp
         });
     }
-
-    // public async Task<ActionResult> AddEmployee([FromBody] List<EmployeePayload> payload)
-    // {
-
-    //     if (payload == null || payload.Count == 0)
-    //     {
-    //         return BadRequest("No data found to save");
-    //     }
-
-    //     var payloadEmails = payload.Select(p => p.Email).ToList();
-
-    //     var existingEmails = await _context.Employee
-    //         .Where(e => payloadEmails.Contains(e.Email))
-    //         .Select(e => e.Email)
-    //         .ToListAsync();
-
-    //     if (existingEmails.Any())
-    //     {
-    //         return BadRequest(new
-    //         {
-    //             message = $"Emails already exist",
-    //         });
-    //     }
-
-    //     var employees = payload.Select(data => new Employee
-    //     {
-    //         FirstName = data.FirstName,
-    //         LastName = data.LastName,
-    //         EmployeeCode = data.EmployeeCode ?? "",
-    //         Email = data.Email,
-    //         PhoneNumber = data.PhoneNumber,
-    //         Address = data.Address ?? "",
-    //         Gender = data.Gender ?? "",
-    //         Grade = data.Grade ?? 0,
-    //         InsuranceNumber = data.InsuranceNumber ?? "",
-    //         TINNumber = data.TINNumber ?? 0,
-    //         EmployeeStatus = data.EmployeeStatus ?? "",
-    //         DesignationId = data.DesignationId ?? 0,
-    //         DesignationName = data.DesignationName ?? "",
-    //         DepartmentId = data.DepartmentId ?? 0,
-    //         DepartmentName = data.DepartmentName ?? "",
-    //         DateOfJoining = data.DateOfJoining ?? System.DateTime.Now,
-    //         DateOfBirth = data.DateOfJoining ?? System.DateTime.Now
-    //     }).ToList();
-
-    //     var signUp = payload.Select(data => new SignUp
-    //     {
-    //         Email = data.Email,
-    //         Password = "123456",
-    //         UserName = data.FirstName + " " + data.LastName,
-    //         Role = "User",
-    //         IsMasterUser = false
-    //     }).ToList();
-
-    //     await _context.Employee.AddRangeAsync(employees);
-    //     await _context.SignUp.AddRangeAsync(signUp);
-    //     await _context.SaveChangesAsync();
-
-    //     return Ok(new
-    //     {
-    //         message = "Employee added successfully",
-    //         data = employees,
-    //         user = signUp
-    //     });
-
-    // }
 
     [HttpPut("update/{id}")]
     public async Task<ActionResult> UpdateEmployee([FromBody] EmployeePayload payload, int id)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250321184315_addedPayscaleSetupTable1")]
+    partial class addedPayscaleSetupTable1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,8 +111,8 @@ namespace FirstOne.Migrations
                     b.Property<bool?>("DisciplinaryAction")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ETIN")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ETIN")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -169,8 +171,8 @@ namespace FirstOne.Migrations
                     b.Property<string>("SalaryAccountNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ServicePeriod")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ServicePeriod")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");

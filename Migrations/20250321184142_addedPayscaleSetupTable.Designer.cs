@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250321184142_addedPayscaleSetupTable")]
+    partial class addedPayscaleSetupTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,8 +111,8 @@ namespace FirstOne.Migrations
                     b.Property<bool?>("DisciplinaryAction")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ETIN")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ETIN")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -169,8 +171,8 @@ namespace FirstOne.Migrations
                     b.Property<string>("SalaryAccountNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ServicePeriod")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ServicePeriod")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -267,46 +269,6 @@ namespace FirstOne.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Loan");
-                });
-
-            modelBuilder.Entity("PayScaleSetup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal?>("BasicSalary")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("CarAllowance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Conveyance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("DelFlag")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("DriversSalaryReimbursement")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("EmployeeGrade")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeSalaryGrade")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("HouseRent")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("MedicalAllowance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PayScaleSetup");
                 });
 
             modelBuilder.Entity("SalaryAssign", b =>

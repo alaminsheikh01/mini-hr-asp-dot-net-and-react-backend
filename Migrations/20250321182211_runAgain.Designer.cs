@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250321182211_runAgain")]
+    partial class runAgain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,20 +75,8 @@ namespace FirstOne.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AcademicQualifications")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BloodGroup")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("CertificateVerification")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ConfirmationDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -106,28 +96,13 @@ namespace FirstOne.Migrations
                     b.Property<string>("DesignationName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("DisciplinaryAction")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ETIN")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmergencyContact")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmployeeCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeSalaryGrade")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EmployeeStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -142,37 +117,10 @@ namespace FirstOne.Migrations
                     b.Property<string>("InsuranceNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("JobLocation")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PermanentAddress")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("PoliceVerification")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PresentAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RetirementOrResignation")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SalaryAccountNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ServicePeriod")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TINNumber")
@@ -267,46 +215,6 @@ namespace FirstOne.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Loan");
-                });
-
-            modelBuilder.Entity("PayScaleSetup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal?>("BasicSalary")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("CarAllowance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Conveyance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("DelFlag")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("DriversSalaryReimbursement")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("EmployeeGrade")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeSalaryGrade")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("HouseRent")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("MedicalAllowance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PayScaleSetup");
                 });
 
             modelBuilder.Entity("SalaryAssign", b =>
