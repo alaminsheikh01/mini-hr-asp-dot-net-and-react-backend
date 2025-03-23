@@ -57,5 +57,5 @@ public class Employee
     public string? EmployeeSalaryGrade { get; set; }
 
     // Additional status options (active, inactive, leave without pay)
-    public string? Status { get; set; }
+    public bool? Status { get; set; }
 }

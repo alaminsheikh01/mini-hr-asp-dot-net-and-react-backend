@@ -38,5 +38,5 @@ public class EmployeePayload
     public string? JobLocation { get; set; } // Added field
     public string? EmployeeType { get; set; } // Added field (permanent, provisional, contractual)
     public string? EmployeeSalaryGrade { get; set; } // Added field
-    public string? Status { get; set; } // Added field (active, inactive, leave without pay)
+    public bool? Status { get; set; } // Added field (active, inactive, leave without pay)
 }

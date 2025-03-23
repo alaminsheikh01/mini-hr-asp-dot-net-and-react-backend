@@ -152,8 +152,24 @@ public class EmployeeController : ControllerBase
                                       DepartmentId = e.DepartmentId ?? 0,
                                       DepartmentName = dp.Name,
                                       DateOfJoining = e.DateOfJoining ?? System.DateTime.Now,
-                                      DateOfBirth = e.DateOfBirth ?? System.DateTime.Now
-
+                                      DateOfBirth = e.DateOfBirth ?? System.DateTime.Now,
+                                      EmergencyContact = e.EmergencyContact,
+                                      NID = e.NID,
+                                      PresentAddress = e.PresentAddress,
+                                      PermanentAddress = e.PermanentAddress,
+                                      BloodGroup = e.BloodGroup,
+                                      ConfirmationDate = e.ConfirmationDate ?? System.DateTime.Now,
+                                      RetirementOrResignation = e.RetirementOrResignation,
+                                      ServicePeriod = e.ServicePeriod,
+                                      SalaryAccountNumber = e.SalaryAccountNumber,
+                                      ETIN = e.ETIN,
+                                      AcademicQualifications = e.AcademicQualifications,
+                                      CertificateVerification = e.CertificateVerification ?? false,
+                                      PoliceVerification = e.PoliceVerification ?? false,
+                                      DisciplinaryAction = e.DisciplinaryAction ?? false,
+                                      JobLocation = e.JobLocation,
+                                      EmployeeType = e.EmployeeType,
+                                      EmployeeSalaryGrade = e.EmployeeSalaryGrade,
                                   }).FirstOrDefaultAsync();
         return Ok(employeeById);
     }
@@ -247,7 +263,7 @@ public class EmployeeController : ControllerBase
                 JobLocation = data.JobLocation ?? "",
                 EmployeeType = data.EmployeeType ?? "",
                 EmployeeSalaryGrade = data.EmployeeSalaryGrade ?? "",
-                Status = data.Status ?? ""
+                Status = data.Status ?? false
 
             });
 
@@ -282,6 +298,8 @@ public class EmployeeController : ControllerBase
         {
             return NotFound();
         }
+
+        // Mapping employee properties from payload (same as before)
         employee.FirstName = payload.FirstName;
         employee.LastName = payload.LastName;
         employee.EmployeeCode = payload.EmployeeCode;
@@ -295,8 +313,29 @@ public class EmployeeController : ControllerBase
         employee.EmployeeStatus = payload.EmployeeStatus ?? "";
         employee.DesignationId = payload.DesignationId ?? 0;
         employee.DepartmentId = payload.DepartmentId ?? 0;
-        employee.DateOfJoining = payload.DateOfJoining ?? System.DateTime.Now;
-        employee.DateOfBirth = payload.DateOfBirth ?? System.DateTime.Now;
+        employee.DateOfJoining = payload.DateOfJoining ?? DateTime.Now;
+        employee.DateOfBirth = payload.DateOfBirth ?? DateTime.Now;
+        employee.PresentAddress = payload.PresentAddress ?? "";
+        employee.PermanentAddress = payload.PermanentAddress ?? "";
+        employee.EmergencyContact = payload.EmergencyContact ?? "";
+        employee.NID = payload.NID ?? "";
+        employee.BloodGroup = payload.BloodGroup ?? "";
+        employee.ConfirmationDate = payload.ConfirmationDate ?? DateTime.Now;
+        employee.RetirementOrResignation = payload.RetirementOrResignation ?? DateTime.Now;
+        employee.ServicePeriod = payload.ServicePeriod ?? "";
+        employee.SalaryAccountNumber = payload.SalaryAccountNumber ?? "";
+        employee.ETIN = payload.ETIN ?? "";
+        employee.AcademicQualifications = payload.AcademicQualifications ?? "";
+
+        // Ensure Boolean fields are parsed correctly from strings
+        employee.CertificateVerification = Convert.ToBoolean(payload.CertificateVerification);
+        employee.PoliceVerification = Convert.ToBoolean(payload.PoliceVerification);
+        employee.DisciplinaryAction = Convert.ToBoolean(payload.DisciplinaryAction);
+
+        employee.JobLocation = payload.JobLocation ?? "";
+        employee.EmployeeType = payload.EmployeeType ?? "";
+        employee.EmployeeSalaryGrade = payload.EmployeeSalaryGrade ?? "";
+
         try
         {
             await _context.SaveChangesAsync();
@@ -308,6 +347,25 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    private bool ConvertToBoolean(object value)
+    {
+        if (value == null)
+        {
+            return false;
+        }
+
+        if (value is bool boolValue)
+        {
+            return boolValue;
+        }
+
+        if (value is string stringValue)
+        {
+            return string.Equals(stringValue, "true", StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
+    }
 
     [HttpGet]
     [Route("employeeAssign")]
@@ -850,4 +908,71 @@ public class EmployeeController : ControllerBase
         return Ok(loan);
     }
 
+    // pay scale setup
+    [HttpPost]
+    [Route("payScaleSetup")]
+    public async Task<ActionResult<PayScaleSetup>> PayScaleSetup([FromBody] PayScaleSetup payScaleSetup)
+    {
+        if (payScaleSetup == null)
+        {
+            return BadRequest("Invalid data.");
+        }
+
+        var existingPayScaleSetup = await _context.PayScaleSetup
+            .FirstOrDefaultAsync(p => p.Id == payScaleSetup.Id);
+
+        if (existingPayScaleSetup != null)
+        {
+            existingPayScaleSetup.EmployeeGrade = payScaleSetup.EmployeeGrade;
+            existingPayScaleSetup.EmployeeSalaryGrade = payScaleSetup.EmployeeSalaryGrade;
+            existingPayScaleSetup.BasicSalary = payScaleSetup.BasicSalary;
+            existingPayScaleSetup.HouseRent = payScaleSetup.HouseRent;
+            existingPayScaleSetup.MedicalAllowance = payScaleSetup.MedicalAllowance;
+            existingPayScaleSetup.Conveyance = payScaleSetup.Conveyance;
+            existingPayScaleSetup.CarAllowance = payScaleSetup.CarAllowance;
+            existingPayScaleSetup.DriversSalaryReimbursement = payScaleSetup.DriversSalaryReimbursement;
+            existingPayScaleSetup.DelFlag = payScaleSetup.DelFlag;
+
+            // Save changes
+            await _context.SaveChangesAsync();
+            return Ok(existingPayScaleSetup);
+        }
+        else
+        {
+            // Create a new record
+            _context.PayScaleSetup.Add(payScaleSetup);
+            await _context.SaveChangesAsync();
+            return Ok(payScaleSetup);
+        }
+    }
+
+    // GET API to retrieve PayScaleSetup by Id
+    [HttpGet()]
+    [Route("payScaleSetup/{id}")]
+    public async Task<ActionResult<PayScaleSetup>> GetPayScaleSetup(int id)
+    {
+        var payScaleSetup = await _context.PayScaleSetup
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (payScaleSetup == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(payScaleSetup);
+    }
+
+    [HttpGet]
+    [Route("GetAllPayScaleSetup")]
+    public async Task<ActionResult<IEnumerable<PayScaleSetup>>> GetAllPayScaleSetups()
+    {
+        var payScaleSetups = await _context.PayScaleSetup.ToListAsync();
+
+        if (payScaleSetups == null || payScaleSetups.Count == 0)
+        {
+            return NoContent();
+        }
+
+        return Ok(payScaleSetups);
+    }
 }
